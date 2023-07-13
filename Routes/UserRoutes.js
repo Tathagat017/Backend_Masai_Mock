@@ -32,23 +32,23 @@ UserRouter.post("/signup", async function (req, res) {
 });
 
 UserRouter.post("/login", async function (req, res) {
+  const { name, email, password } = req.body;
   try {
-    let { email, password } = req.body;
     let user = await UserModel.findOne({ email: email });
-    if (!user) {
-      res.status(200).send({ message: "Please register first" });
-    } else {
-      bcrypt.compare(password, user.password, function (err, results) {
-        if (err) {
-          res.status(400).send({ message: "Invalid Credentials" });
-        } else {
+    if (user) {
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result) {
           var token = jwt.sign({ userId: user._id }, "key");
-          res.status(200).send({ message: "Login Successful", token: token });
+          res
+            .status(200)
+            .send({ message: "User login successfull", token: token });
         }
       });
+    } else {
+      res.status(404).send({ message: "user not registered yet" });
     }
   } catch (err) {
-    res.status(500).send("Error in Login,please try again");
+    res.status(401).send({ message: "login not successfull" });
   }
 });
 

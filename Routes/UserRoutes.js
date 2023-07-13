@@ -6,6 +6,10 @@ const bcrypt = require("bcrypt");
 
 const UserRouter = express.Router();
 
+UserRouter.get("/", function (req, res) {
+  res.status(200).send("<h1>Welcome to Tathagat's Mock NEM API</h1>");
+});
+
 UserRouter.post("/signup", async function (req, res) {
   try {
     let { email, password } = req.body;
